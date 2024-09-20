@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Mango.Services.CouponAPI.Migrations
 {
     /// <inheritdoc />
@@ -30,6 +32,16 @@ namespace Mango.Services.CouponAPI.Migrations
                     table.PrimaryKey("PK_Coupons", x => x.CouponId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "Coupons",
+                columns: new[] { "CouponId", "CouponCode", "DiscountAmount", "MinimumAmount" },
+                values: new object[,]
+                {
+                    { 1, "MC20", 20.0, 2000.0 },
+                    { 2, "MC10", 20.0, 1000.0 },
+                    { 3, "MC30", 30.0, 3000.0 }
+                });
         }
 
         /// <inheritdoc />

@@ -8,7 +8,7 @@ using OfficeOpenXml;
 
 namespace Mango.Services.CouponAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/coupon")]
     [ApiController]
     public class CouponAPIController : ControllerBase
     {
@@ -22,14 +22,13 @@ namespace Mango.Services.CouponAPI.Controllers
             _mapper = mapper;
         }
         [HttpGet]
+      
         public ResponseDTO GetAll()
         {
             try
             {
                 IEnumerable<Coupon> couponObjList=_db.Coupons.ToList();
                 _response.Result = _mapper.Map<IEnumerable<Coupon>>(couponObjList);
-               
-             
             }
             catch (Exception ex) {
                 _response.IsSuccess = false;
@@ -84,8 +83,9 @@ namespace Mango.Services.CouponAPI.Controllers
             }
             return _response;
         }
-        [HttpPost]
 
+
+        [HttpPost]
         public ResponseDTO InsertCoupon([FromBody] CouponDto couponDto)
         {
             try
@@ -122,16 +122,14 @@ namespace Mango.Services.CouponAPI.Controllers
             return (_response);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ResponseDTO DeleteCoupon(int id)
         {
             try
             {
                 Coupon CouponObj = _db.Coupons.First(u => u.CouponId == id);
                 _db.Coupons.Remove(CouponObj);
-                _db.SaveChanges();
-
-                
+                _db.SaveChanges();  
             }
             catch (Exception ex)
             {
