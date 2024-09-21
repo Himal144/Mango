@@ -29,6 +29,7 @@ namespace Mango.Services.AuthAPI.Controllers
                 return BadRequest(_responseDTO);
 
             }
+            _responseDTO.Result = model;
             return Ok(_responseDTO);
         }
 
@@ -45,6 +46,23 @@ namespace Mango.Services.AuthAPI.Controllers
             _responseDTO.Result = loginResponse;
 
             _responseDTO.Message = "Logged in successfully.";
+            return Ok(_responseDTO);
+        }
+
+
+        [HttpPost("assignRole")]
+        public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDTO model)
+        {
+            var assignRoleResponse = await _authService.AssignRole(model.Email,model.Role);
+            if (assignRoleResponse == null)
+            { 
+                _responseDTO.IsSuccess = false;
+                _responseDTO.Message = "Unable to create the role.";
+                return BadRequest(_responseDTO);
+
+            }
+            _responseDTO.Result = assignRoleResponse;
+            _responseDTO.Message = "Role created successfully successfully.";
             return Ok(_responseDTO);
         }
     }

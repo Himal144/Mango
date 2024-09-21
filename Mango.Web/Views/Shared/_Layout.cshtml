@@ -39,6 +39,25 @@
                             </ul>
                         </li>
                     </ul>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <ul class="d-flex" style="text-decoration:none; list-style: none;">
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Register">Register</a>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="d-flex" style="text-decoration:none; list-style: none;">
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Logout">Logout</a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
             <partial name="_Notification"></partial>
