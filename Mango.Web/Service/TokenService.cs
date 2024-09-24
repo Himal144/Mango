@@ -23,9 +23,9 @@ namespace Mango.Web.Service
             return hasToken is true ? token : null;
         }
 
-        public void RemoveToken(string token)
+        public void RemoveToken()
         {
-            _contextAccessor.HttpContext.Response.Cookies.Delete(SD.TokenCookie);
+            _contextAccessor.HttpContext?.Response.Cookies.Delete(SD.TokenCookie);
 
         }
     }

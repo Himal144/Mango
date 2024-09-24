@@ -2,6 +2,7 @@
 using Mango.Services.CouponAPI.Data;
 using Mango.Services.CouponAPI.Models;
 using Mango.Services.CouponAPI.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
@@ -10,6 +11,7 @@ namespace Mango.Services.CouponAPI.Controllers
 {
     [Route("api/coupon")]
     [ApiController]
+    [Authorize]
     public class CouponAPIController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
@@ -28,7 +30,7 @@ namespace Mango.Services.CouponAPI.Controllers
             try
             {
                 IEnumerable<Coupon> couponObjList=_db.Coupons.ToList();
-                _response.Result = _mapper.Map<IEnumerable<Coupon>>(couponObjList);
+                _response.Result = _mapper.Map<IEnumerable<CouponDto>>(couponObjList);
             }
             catch (Exception ex) {
                 _response.IsSuccess = false;
@@ -46,7 +48,7 @@ namespace Mango.Services.CouponAPI.Controllers
             try
             {
                 Coupon couponObj = _db.Coupons.First(u=>u.CouponId==id);
-                _response.Result = _mapper.Map<Coupon>(couponObj);
+                _response.Result = _mapper.Map<CouponDto>(couponObj);
                 
             }
             catch (Exception ex)
@@ -72,7 +74,7 @@ namespace Mango.Services.CouponAPI.Controllers
                 {
                     _response.IsSuccess=false;
                 }
-                _response.Result = _mapper.Map<Coupon>(couponObj);
+                _response.Result = _mapper.Map<CouponDto>(couponObj);
 
             }
             catch (Exception ex)
@@ -86,6 +88,7 @@ namespace Mango.Services.CouponAPI.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles=("ADMIN"))]
         public ResponseDTO InsertCoupon([FromBody] CouponDto couponDto)
         {
             try
@@ -104,6 +107,7 @@ namespace Mango.Services.CouponAPI.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = ("ADMIN"))]
         public ResponseDTO UpdateCoupon([FromBody] CouponDto couponDto)
         {
             try
@@ -123,6 +127,7 @@ namespace Mango.Services.CouponAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = ("ADMIN"))]
         public ResponseDTO DeleteCoupon(int id)
         {
             try
@@ -143,8 +148,9 @@ namespace Mango.Services.CouponAPI.Controllers
 
         //Uploading the coupon through the excel file
 
-    [HttpPost("upload-excel")]
-    public IActionResult UploadCouponExcel(IFormFile file)
+        [HttpPost("upload-excel")]
+        [Authorize(Roles = ("ADMIN"))]
+        public IActionResult UploadCouponExcel(IFormFile file)
     {
         if (file == null || file.Length <= 0)
         {

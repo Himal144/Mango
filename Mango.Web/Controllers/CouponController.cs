@@ -22,6 +22,10 @@ namespace Mango.Web.Controllers
             if (response != null && response.IsSuccess) {
                 list = JsonConvert.DeserializeObject<List<CouponDto>>(Convert.ToString(response.Result));
             }
+            else
+            {
+                TempData["error"] = response.Message;
+            }
             return View(list);
         }
 
@@ -35,15 +39,25 @@ namespace Mango.Web.Controllers
         [ActionName("CouponCreate")]
         public async Task<IActionResult> CouponPost(CouponDto model)
         {
-            if (ModelState.IsValid) {
-                ResponseDto? response = await _couponService.CreateCouponAsync(model);
-                if (response != null && response.IsSuccess)
+            try
+            {
+                if (ModelState.IsValid)
                 {
-                    TempData["Success"] = "Coupon created successfully.";
-                    return RedirectToAction(nameof(CouponIndex));
+                    ResponseDto? response = await _couponService.CreateCouponAsync(model);
+                    if (response != null && response.IsSuccess)
+                    {
+                        TempData["Success"] = "Coupon created successfully.";
+                        return RedirectToAction(nameof(CouponIndex));
+                    }
+                    TempData["error"] = response.Message;
                 }
+                return View(model);
             }
-            return View(model);
+            catch (Exception ex)
+            {
+                TempData["error"]=ex.Message;
+                return View(model);
+            }
         }
 
         [HttpDelete("{id}")]
@@ -53,10 +67,9 @@ namespace Mango.Web.Controllers
                 ResponseDto? response = await _couponService.DeleteCouponAsync(id);
                 if (response.IsSuccess)
                 {
-                    TempData["Success"] = "Coupon deleted successfully.";
-                    return RedirectToAction(nameof(CouponCreate));
+                    return Json( new { IsSuccess=true,Message="Coupon Deleted Successfully"});
                 }
-                return RedirectToAction(nameof(CouponDelete), new { id });  
+                return Json(new {IsSuccess=false,Message=response?.Message });  
         }
 
     }

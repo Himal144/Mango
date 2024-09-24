@@ -79,8 +79,23 @@
 		$.ajax({
                 url: url,
                 type: "Delete",
-                success: function (data) {
-                   
+                success: function (response) {
+							if (response.isSuccess) {
+								Swal.fire(
+									'Deleted!',
+									'Your Coupon has been deleted.',
+									'success'
+								).then(() => {
+									location.reload();  // Reload the page to refresh the product list
+								});
+							}
+							else {
+								Swal.fire(
+									'Error!',
+									response.message || 'There was an issue deleting the Coupon.',
+									'error'
+								);
+							}
                 }
             })
 	  }

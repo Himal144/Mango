@@ -3,7 +3,7 @@
     public interface ITokenService
     {
         public void AddToken(string token);
-        public void RemoveToken(string token);
+        public void RemoveToken();
         public string GetToken();
     }
 }

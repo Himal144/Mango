@@ -11,6 +11,7 @@ namespace Mango.Services.AuthAPI.Controllers
     {
         private readonly IAuthService _authService;
         protected ResponseDTO _responseDTO;
+        
 
         public AuthAPIController(IAuthService authService )
         {
@@ -44,6 +45,7 @@ namespace Mango.Services.AuthAPI.Controllers
 
             }
             _responseDTO.Result = loginResponse;
+            
 
             _responseDTO.Message = "Logged in successfully.";
             return Ok(_responseDTO);

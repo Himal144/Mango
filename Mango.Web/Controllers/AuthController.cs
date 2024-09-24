@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 
 namespace Mango.Web.Controllers
@@ -14,9 +15,11 @@ namespace Mango.Web.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
+        private readonly ITokenService _tokenService;
+        public AuthController(IAuthService authService,ITokenService tokenService)
         {
             _authService = authService;
+            _tokenService = tokenService;
         }
         public IActionResult Login()
         {
@@ -99,15 +102,26 @@ namespace Mango.Web.Controllers
             identity.AddClaim(new Claim(ClaimTypes.Name,
               jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email).Value));
 
+            identity.AddClaim(new Claim(ClaimTypes.Role,
+              jwt.Claims.FirstOrDefault(u => u.Type =="role").Value));
+
             var principal =new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            HttpContext.Response.Cookies.Append(SD.TokenCookie, model.Token, new CookieOptions
+            {
+                HttpOnly = true, // This ensures that the cookie is only accessible via HTTP and not JavaScript
+                Expires = DateTime.Now.AddDays(7) // Token will expire in 7 days (adjust as needed)
+            });
 
 
         }
 
-        public IActionResult Logout()
+        public async  Task<IActionResult> Logout()
         {
-            return View();
+            await HttpContext.SignOutAsync();
+            _tokenService.RemoveToken();
+            return RedirectToAction("Index","Home");
         }
     }
 }
