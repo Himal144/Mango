@@ -1,4 +1,5 @@
-﻿using Mango.Web.Models;
+﻿
+using Mango.Web.Models;
 using Mango.Web.Service;
 using Mango.Web.Service.IService;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,12 @@ namespace Mango.Web.Controllers
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
+   
 
         public ProductController(IProductService productService)
         {
             _productService = productService;
+            
         }
 
         public async Task<IActionResult> ProductIndex()
@@ -71,5 +74,43 @@ namespace Mango.Web.Controllers
             }
             return Json(new { isSuccess = false, message = response?.Message });
         }
-    }
+
+        [HttpGet]
+		public async Task<IActionResult> ProductUpdate(int id)
+		{
+            var response = await _productService.GetProductByIdAsync(id);
+            if (response.Result== null)
+            {
+                TempData["error"] = "Product not found";
+                return RedirectToAction(nameof(ProductIndex));
+
+            }
+            ProductDto productDto = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString(response.Result));
+			return View(productDto);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> ProductUpdate(ProductDto model)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					ResponseDto? response = await _productService.UpdateProductAsync(model);
+					if (response != null && response.IsSuccess)
+					{
+						TempData["Success"] = "Product Updated successfully.";
+						return RedirectToAction(nameof(ProductIndex));
+					}
+					TempData["error"] = response.Message;
+				}
+				return View(model);
+			}
+			catch (Exception ex)
+			{
+				TempData["error"] = ex.Message;
+				return View(model);
+			}
+		}
+	}
 }

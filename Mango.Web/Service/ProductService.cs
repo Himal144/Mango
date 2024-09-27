@@ -1,6 +1,7 @@
 ﻿using Mango.Web.Models;
 using Mango.Web.Service.IService;
 using Mango.Web.Utility;
+using System;
 
 namespace Mango.Web.Service
 {
@@ -45,9 +46,10 @@ namespace Mango.Web.Service
             return await _baseService.SendAsync(new RequestDto()
             {
                 apiType = SD.ApiType.GET,
-                Url = SD.ProductAPIBase + "/api/product" + id
+                Url = SD.ProductAPIBase + "/api/product/" + id
             });
-        }
+
+            }
 
         public async Task<ResponseDto?> UpdateProductAsync(ProductDto productDto)
         {

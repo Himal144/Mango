@@ -10,7 +10,7 @@ namespace Mango.Services.ProductAPI.Controllers
 {
     [Route("api/product")]
     [ApiController]
-    [Authorize]
+   
     public class ProductAPIController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
@@ -49,7 +49,6 @@ namespace Mango.Services.ProductAPI.Controllers
             {
                 Product productObj = _db.Products.First(u => u.ProductId == id);
                 _response.Result = _mapper.Map<ProductDto>(productObj);
-
             }
             catch (Exception ex)
             {
@@ -58,7 +57,6 @@ namespace Mango.Services.ProductAPI.Controllers
 
             }
             return _response;
-
         }
 
 
@@ -92,7 +90,6 @@ namespace Mango.Services.ProductAPI.Controllers
                 Product productObj = _mapper.Map<Product>(productDto);
                 _db.Products.Update(productObj);
                 _db.SaveChanges();
-
                 _response.Result = _mapper.Map<ProductDto>(productObj);
             }
             catch (Exception ex)
@@ -121,7 +118,5 @@ namespace Mango.Services.ProductAPI.Controllers
             }
             return _response;
         }
-
-
     }
 }

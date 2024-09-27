@@ -55,6 +55,9 @@
 							<a class="btn btn-danger" onclick=Delete('/Product/Delete/@item.ProductId')>
 								<i class="bi bi-trash" id=></i>
 							</a>
+							<a class="btn btn-danger" asp-action="ProductUpdate" asp-route-id=@item.ProductId>
+								<i class="bi bi-pencil-square" ></i>
+							</a>
 						</td>
 					</tr>
 				}

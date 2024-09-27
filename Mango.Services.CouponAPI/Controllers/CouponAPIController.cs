@@ -70,11 +70,14 @@ namespace Mango.Services.CouponAPI.Controllers
             try
             {
                 Coupon couponObj = _db.Coupons.FirstOrDefault(u => u.CouponCode.ToLower() == code.ToLower());
-                if(couponObj == null)
+                if (couponObj == null)
                 {
-                    _response.IsSuccess=false;
+                    _response.IsSuccess = false;
                 }
-                _response.Result = _mapper.Map<CouponDto>(couponObj);
+                else
+                {
+                    _response.Result = _mapper.Map<CouponDto>(couponObj);
+                }
 
             }
             catch (Exception ex)
