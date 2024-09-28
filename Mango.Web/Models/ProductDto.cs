@@ -13,7 +13,7 @@ namespace Mango.Web.Models
 
 
         //Data type for using in the Product Details
-        [Range(1,100)]
-        public int Count { get; set; }
+        [Range(1, 100)]
+        public int Count { get; set; } = 1;
     }
 }

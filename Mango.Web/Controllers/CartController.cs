@@ -37,5 +37,42 @@ namespace Mango.Web.Controllers
                 return new CartDto();
             }
         }
+
+
+        public async Task<IActionResult> ApplyCoupon(CartDto cartDto)
+        {
+            CartDto newcartDto = new()
+            {
+                CartHeader = cartDto.CartHeader,
+                CartDetails = new List<CartDetailsDto>()
+            };
+       
+           
+            ResponseDto response = await _cartService.ApplyCouponAsync(newcartDto);
+            if (response != null && response.IsSuccess) {
+                TempData["Success"] = "Cuppon applied successfully.";
+                return RedirectToAction(nameof(CartIndex));
+            }
+            return View(cartDto);
+        }
+
+        public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
+        {
+            cartDto.CartHeader.CouponCode = "";
+            CartDto newcartDto = new()
+            {
+                CartHeader= cartDto.CartHeader,
+                CartDetails = new List<CartDetailsDto>()
+            };
+
+
+            ResponseDto response = await _cartService.ApplyCouponAsync(newcartDto);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["Success"] = "Cuppon removed successfully.";
+                return RedirectToAction(nameof(CartIndex));
+            }
+            return View(cartDto);
+        }
     }
 }

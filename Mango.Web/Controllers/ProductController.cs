@@ -54,6 +54,7 @@ namespace Mango.Web.Controllers
                     }
                     TempData["error"] = response.Message;
                 }
+                TempData["error"] = "Invalid input data.";
                 return View(model);
             }
             catch (Exception ex)

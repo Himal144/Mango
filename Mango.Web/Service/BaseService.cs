@@ -38,7 +38,8 @@ namespace Mango.Web.Service
                 {
                     message.Content = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8, "application/json");
                 }
-
+                var jsonData = JsonConvert.SerializeObject(message.Content);
+                Debug.WriteLine(jsonData);
                 HttpResponseMessage? apiResponse = null;
 
                 switch (requestDto.apiType)
@@ -58,6 +59,8 @@ namespace Mango.Web.Service
                 }
 
                 apiResponse = await client.SendAsync(message);
+                var responseContent = await apiResponse.Content.ReadAsStringAsync();
+                Debug.WriteLine($"API Response: {responseContent}");
 
                 switch (apiResponse.StatusCode)
                 {

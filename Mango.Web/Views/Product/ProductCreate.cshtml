@@ -1,6 +1,7 @@
 ﻿@model ProductDto
 
 <form asp-action="ProductCreate" method="post">
+    <input asp-for="@Model.Count" value=1 hidden/>
     <br />
     <div class="container border p-3">
         <h1 class="text-white text-center">Create Product</h1>

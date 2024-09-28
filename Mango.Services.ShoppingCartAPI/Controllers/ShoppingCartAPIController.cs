@@ -159,7 +159,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
                 var cartHeaderFromDb = await _db.CartHeaders.FirstAsync(u => u.UserId == cartDto.CartHeader.UserId);
                 cartHeaderFromDb.CouponCode = cartDto.CartHeader.CouponCode;
                 _db.CartHeaders.Update(cartHeaderFromDb);
-                _db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
 
             }
             catch (Exception ex)

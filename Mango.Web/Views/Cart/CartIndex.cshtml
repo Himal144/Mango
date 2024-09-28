@@ -1,6 +1,8 @@
 ﻿@model CartDto
-
+@if(Model.CartHeader!=null && Model.CartDetails?.Count() >0){
 <form method="post">
+    <input asp-for="CartHeader.UserId" hidden />
+    <input asp-for="CartHeader.CartHeaderId" hidden />
     <br />
     <div class="">
         <div class="card border mt-4 container">
@@ -31,21 +33,29 @@
                     </div>
                 </div>
                 <hr />
-                @foreach (var item in Model.CartDetails)
+                @{
+                    var cartDetailsList = Model.CartDetails.ToList();
+                }
+                @for (int i = 0; i < cartDetailsList.Count(); i++)
                 {
+                    <input type="hidden" asp-for="@cartDetailsList[i].CartDetailsId" />
+                    <input type="hidden" asp-for="@cartDetailsList[i].CartHeaderId" />
+                    <input type="hidden" asp-for="@cartDetailsList[i].ProductId" />
+                    <input type="hidden" asp-for="@cartDetailsList[i].Count" />
+
                     <div class="row h-100">
                         <div class="col-4 col-md-2 text-center py-2">
-                            <img src="@item.Product.ImageUrl" class="rounded" width="100%" />
+                            <img src="@cartDetailsList[i].Product.ImageUrl" class="rounded" width="100%" />
                         </div>
                         <div class="col-8 col-md-5">
-                            <h5>Name</h5>
-                            <div style="font-size:11px;">@Html.Raw(item.Product.Description)</div>
+                            <h5>@cartDetailsList[i].Product.Name</h5>
+                            <div style="font-size:11px;">@Html.Raw(cartDetailsList[i].Product.Description)</div>
                         </div>
                         <div class="col-3 col-md-2 pt-md-4" style="font-size:11px;">
-                            <span style="font-size:17px;">@item.Product.Price </span>
+                            <span style="font-size:17px;">@cartDetailsList[i].Product.Price </span>
                         </div>
                         <div class="col-3 col-md-2 pt-md-4" style="font-size:11px;">
-                            <span style="font-size:17px;"> @item.Count</span>
+                            <span style="font-size:17px;">@cartDetailsList[i].Count</span>
                         </div>
                         <div class="col-2 col-lg-1 p-0 pt-lg-4 text-center">
                             <a class="btn btn-sm btn-danger">
@@ -54,16 +64,28 @@
                         </div>
                     </div>
                 }
+
                 <hr />
                 <div class="row">
                     <div class="col-6">
-                        <span>Coupon:</span>
-                        <input />
-                        <button type="submit" class="btn btn-sm btn-success"> Apply </button>
+                        @if (string.IsNullOrEmpty(Model.CartHeader.CouponCode))
+                        {
+                            <span>Coupon:</span>
+                            <input asp-for="@Model.CartHeader.CouponCode"/>
+                            <button type="submit" asp-action="ApplyCoupon" class="btn btn-sm btn-success"> Apply </button>
+                        }
+                        else
+                        {
+                            <span>Coupon:</span>
+                            <input asp-for="@Model.CartHeader.CouponCode" disabled/>
+                            <button type="submit" asp-action="RemoveCoupon" class="btn btn-sm btn-success"> RemoveCoupon </button>
+                        }
                     </div>
                     <div class="col-6 text-end">
                         <span class="text-danger" style="font-size:21px;">  Order Total : @Model.CartHeader.CartTotal <br /></span>
+                        @if(Model.CartHeader.DiscountAmount>0){
                         <span class="text-success"> Order Discount :  @Model.CartHeader.DiscountAmount</span>
+                        }
                     </div>
                 </div>
             </div>
@@ -72,9 +94,16 @@
                     <button type="submit" class="btn btn-outline-danger form-control">Email Cart</button>
                 </div>
                 <div class="col-6 col-md-3 offset-md-6">
-                    <button disabled class="btn btn-success form-control " value="Checkout (Comming Soon!)" />
+                    <button disabled class="btn btn-success form-control " >Checkout (Comming Soon!)</button>
                 </div>
             </div>
         </div>
     </div>
-</form>
+    </form>
+}
+else
+{
+    <div>
+        <p>Please add the item to cart first.</p>
+    </div>
+}
